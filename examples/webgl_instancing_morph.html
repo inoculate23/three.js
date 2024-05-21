@@ -10,7 +10,7 @@
 		<script type="importmap">
 			{
 				"imports": {
-					"three": "../build/three.module.js",
+					"three": "https://unpkg.com/three@0.164.1/build/three.module.js?module",
 					"three/addons/": "./jsm/"
 				}
 			}
@@ -86,7 +86,7 @@
 
 				const loader = new GLTFLoader();
 
-				loader.load( 'models/gltf/Horse.glb', function ( glb ) {
+				loader.load( 'https://haawkeneuraltech.com/images/sf_models/pulse.glb', function ( glb ) {
 
 					dummy = glb.scene.children[ 0 ];
 
