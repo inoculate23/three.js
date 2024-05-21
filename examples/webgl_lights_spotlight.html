@@ -15,7 +15,7 @@
 		<script type="importmap">
 			{
 				"imports": {
-					"three": "../build/three.module.js",
+					"three": "https://unpkg.com/three@0.164.1/build/three.module.js?module",
 					"three/addons/": "./jsm/"
 				}
 			}
@@ -26,6 +26,7 @@
 			import * as THREE from 'three';
 
 			import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 			import { PLYLoader } from 'three/addons/loaders/PLYLoader.js';
 			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -117,9 +118,9 @@
 
 				//
 
-				new PLYLoader().load( 'models/ply/binary/Lucy100k.ply', function ( geometry ) {
+				new GLTFoader().load( 'models/gltf/matador.gltf', function ( geometry ) {
 
-					geometry.scale( 0.0024, 0.0024, 0.0024 );
+					geometry.scale( 0.7, 0.7, 0.7 );
 					geometry.computeVertexNormals();
 
 					const material = new THREE.MeshLambertMaterial();
