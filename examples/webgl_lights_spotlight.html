@@ -118,7 +118,7 @@
 
 				//
 
-				new GLTFoader().load( 'models/gltf/matador.gltf', function ( geometry ) {
+				var GLTFoader = new GLTFoader().load( 'models/gltf/matador.gltf', function ( geometry ) {
 
 					geometry.scale( 0.7, 0.7, 0.7 );
 					geometry.computeVertexNormals();
