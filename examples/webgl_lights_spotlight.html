@@ -118,7 +118,7 @@
 
 				//
 
-				const modelLoader = new GLTFLoader().load( 'models/gltf/gunslinge3.glb', function ( gltf.scene ) {
+				const modelLoader = new GLTFLoader().load( 'models/gltf/gunslinge3.glb', function ( gltf ) {
                                          var model = gltf.scene;
 					mesh.geometry.scale(2, 2, 2);
 					model.computeVertexNormals();
