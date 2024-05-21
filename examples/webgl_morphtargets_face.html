@@ -78,8 +78,8 @@
 						const mesh = gltf.scene.children[ 0 ];
 
 
-					mesh.scale( 0.7, 0.7, 0.7 );					
-						scene.add( mesh );
+                                                   mesh.geometry.scale(.7, .7, .7);
+								       scene.add( mesh );
 
 						mixer = new THREE.AnimationMixer( mesh );
 
