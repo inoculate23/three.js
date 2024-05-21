@@ -21,7 +21,7 @@
 		<script type="importmap">
 			{
 				"imports": {
-					"three": "../build/three.module.js",
+					"three": "https://unpkg.com/three@0.164.1/build/three.module.js?module",
 					"three/addons/": "./jsm/"
 				}
 			}
@@ -73,7 +73,7 @@
 				new GLTFLoader()
 					.setKTX2Loader( ktx2Loader )
 					.setMeshoptDecoder( MeshoptDecoder )
-					.load( 'models/gltf/facecap.glb', ( gltf ) => {
+					.load( 'models/gltf/head.glb', ( gltf ) => {
 
 						const mesh = gltf.scene.children[ 0 ];
 
