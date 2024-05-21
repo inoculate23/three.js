@@ -120,7 +120,6 @@
 
 				const modelLoader = new GLTFLoader().load( 'models/gltf/gunslinge3.glb', function ( gltf ) {
                                          var model = gltf.scene;
-					mesh.geometry.scale(2, 2, 2);
 					model.computeVertexNormals();
 
 					const material = new THREE.MeshLambertMaterial();
@@ -128,6 +127,8 @@
 					const mesh = new THREE.Mesh( geometry, material );
 					mesh.rotation.y = - Math.PI / 2;
 					mesh.position.y = 0.8;
+				mesh.geometry.scale(2, 2, 2);
+
 					mesh.castShadow = true;
 					mesh.receiveShadow = true;
 					scene.add( mesh );
