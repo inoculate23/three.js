@@ -93,7 +93,7 @@
 
 				// audio buffer
 
-				const soundBuffer = await fetch( './sounds/blue_eyes.mp3' ).then( res => res.arrayBuffer() );
+				const soundBuffer = await fetch( './music_box.mp3' ).then( res => res.arrayBuffer() );
 				const audioContext = new AudioContext();
 
 				const audioBuffer = await audioContext.decodeAudioData( soundBuffer );
