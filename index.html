@@ -5,7 +5,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link rel="apple-touch-icon" href="images/icon.png">
-		<link rel="manifest" href="editor/manifest.jsonn">
+		<link rel="manifest" href="./editor/manifest.jsonn">
 	</head>
 	<body>
 		<link rel="stylesheet" href="css/main.css">
@@ -13,40 +13,40 @@
 		<script type="importmap">
 			{
 				"imports": {
-					"three": "../build/three.module.js",
-					"three/addons/": "../examples/jsm/",
+					"three": "./build/three.module.js",
+					"three/addons/": "./examples/jsm/",
 
-					"three/examples/": "../examples/",
+					"three/examples/": "./examples/",
 					"three-gpu-pathtracer": "https://cdn.jsdelivr.net/npm/three-gpu-pathtracer@0.0.23/build/index.module.js",
 					"three-mesh-bvh": "https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.7.4/build/index.module.js"
 				}
 			}
 		</script>
 
-		<script src="examples/jsm/libs/draco/draco_decoder.js"></script>
+		<script src="./examples/jsm/libs/draco/draco_decoder.js"></script>
 
-		<link rel="stylesheet" href="editor/js/libs/codemirror/codemirror.css">
-		<link rel="stylesheet" href="editor/js/libs/codemirror/theme/monokai.css">
-		<script src="editor/js/libs/codemirror/codemirror.js"></script>
-		<script src="editor/js/libs/codemirror/mode/javascript.js"></script>
-		<script src="editor/js/libs/codemirror/mode/glsl.js"></script>
+		<link rel="stylesheet" href="./editor/js/libs/codemirror/codemirror.css">
+		<link rel="stylesheet" href="./editor/js/libs/codemirror/theme/monokai.css">
+		<script src="./editor/js/libs/codemirror/codemirror.js"></script>
+		<script src="./editor/js/libs/codemirror/mode/javascript.js"></script>
+		<script src="./editor/js/libs/codemirror/mode/glsl.js"></script>
 
 		<script src="editor/js/libs/esprima.js"></script>
 		<script src="editor/js/libs/jsonlint.js"></script>
 
 		<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
 
-		<link rel="stylesheet" href="jeditor/js/libs/codemirror/addon/dialog.css">
-		<link rel="stylesheet" href="editor/js/libs/codemirror/addon/show-hint.css">
-		<link rel="stylesheet" href="editor/js/libs/codemirror/addon/tern.css">
+		<link rel="stylesheet" href="./editor/js/libs/codemirror/addon/dialog.css">
+		<link rel="stylesheet" href="./editor/js/libs/codemirror/addon/show-hint.css">
+		<link rel="stylesheet" href="./editor/js/libs/codemirror/addon/tern.css">
 
-		<script src="editor/jslibs/codemirror/addon/dialog.js"></script>
-		<script src="editor/jslibs/codemirror/addon/show-hint.js"></script>
-		<script src="editor/jslibs/codemirror/addon/tern.js"></script>
-		<script src="editor/jslibs/acorn/acorn.js"></script>
-		<script src="editor/jslibs/acorn/acorn_loose.js"></script>
-		<script src="editor/jslibs/acorn/walk.js"></script>
-		<script src="editor/jslibs/ternjs/polyfill.js"></script>
+		<script src="./editor/js/libs/codemirror/addon/dialog.js"></script>
+		<script src="./editor/js/libs/codemirror/addon/show-hint.js"></script>
+		<script src="./editor/js/libs/codemirror/addon/tern.js"></script>
+		<script src="./editor/js/libs/acorn/acorn.js"></script>
+		<script src="./editor/js/libs/acorn/acorn_loose.js"></script>
+		<script src="./editor/js/libs/acorn/walk.js"></script>
+		<script src="./editor/js/libs/ternjs/polyfill.js"></script>
 		<script src="editor/js/libs/ternjs/signal.js"></script>
 		<script src="editor/js/libs/ternjs/tern.js"></script>
 		<script src="editor/js/libs/ternjs/def.js"></script>
@@ -60,14 +60,14 @@
 
 			import * as THREE from 'three';
 
-			import { Editor } from '../js/Editor.js';
-			import { Viewport } from '.,/js/Viewport.js';
-			import { Toolbar } from '.,/js/Toolbar.js';
-			import { Script } from ',./js/Script.js';
-			import { Player } from '.,/js/Player.js';
-			import { Sidebar } from '.,/js/Sidebar.js';
-			import { Menubar } from '.,/js/Menubar.js';
-			import { Resizer } from '.,/js/Resizer.js';
+			import { Editor } from './editor/js/Editor.js';
+			import { Viewport } from './editor/js/Viewport.js';
+			import { Toolbar } from './editor/js/Toolbar.js';
+			import { Script } from './editor/js/Script.js';
+			import { Player } from '.,/editor/js/Player.js';
+			import { Sidebar } from './editor/js/Sidebar.js';
+			import { Menubar } from './editor/js/Menubar.js';
+			import { Resizer } from './editor/js/Resizer.js';
 
 			window.URL = window.URL || window.webkitURL;
 			window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
