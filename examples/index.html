@@ -8,18 +8,14 @@
 	</head>
 	<body>
 
-		<div id="info">
-			<a href="https://threejs.org" target="_blank" rel="noopener">three.js webgpu</a> - VFX Linked particles
-			<br>
-			Based on <a href="https://github.com/ULuIQ12/webgpu-tsl-linkedparticles" target="_blank" rel="noopener">this experiment</a> by Christophe Choffel
-		</div>
+	
 
 		<script type="importmap">
 			{
 				"imports": {
-					"three": "./build/three.webgpu.js",
-					"three/webgpu": "./build/three.webgpu.js",
-					"three/tsl": "./build/three.tsl.js",
+					"three": "../build/three.webgpu.js",
+					"three/webgpu": "../build/three.webgpu.js",
+					"three/tsl": "../build/three.tsl.js",
 					"three/addons/": "./jsm/"
 				}
 			}
@@ -28,7 +24,7 @@
 		<script type="module">
 
 			import * as THREE from 'three';
-			import { atan, cos, float, max, min, mix, PI, PI2, sin, vec2, vec3, color, Fn, hash, hue, If, instanceIndex, Loop, mx_fractal_noise_float, mx_fractal_noise_vec3, pass, pcurve, storage, deltaTime, time, uv, uniform, step } from 'three/tsl';
+			import { atan, cos, float, max, min, mix, PI, PI2, sin, vec2, vec3, color, Fn, hash, hue, If, instanceIndex, Loop, mx_fractal_noise_float, mx_fractal_noise_vec3, pass, pcurve, storage, deltaTime, time, uv, uniform } from 'three/tsl';
 			import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 
 			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -89,6 +85,33 @@
 				timer = new Timer();
 				timer.connect( document );
 
+				// Volumetric Fog Area
+
+				const noiseTexture3D = createTexture3D();
+
+				const smokeAmount = uniform( 2 );
+
+				const volumetricMaterial = new THREE.VolumeNodeMaterial();
+				volumetricMaterial.steps = 12;
+				volumetricMaterial.offsetNode = bayer16( screenCoordinate ); // Add dithering to reduce banding
+				volumetricMaterial.scatteringNode = Fn( ( { positionRay } ) => {
+
+					// Return the amount of fog based on the noise texture
+
+					const timeScaled = vec3( time, 0, time.mul( .3 ) );
+
+					const sampleGrain = ( scale, timeScale = 1 ) => texture3D( noiseTexture3D, positionRay.add( timeScaled.mul( timeScale ) ).mul( scale ).mod( 1 ), 0 ).r.add( .5 );
+
+					let density = sampleGrain( .1 );
+					density = density.mul( sampleGrain( .05, 1 ) );
+					density = density.mul( sampleGrain( .02, 2 ) );
+
+					return smokeAmount.mix( 1, density );
+
+				} );
+
+
+
 				// renderer
 
 				renderer = new THREE.WebGPURenderer( { antialias: true } );
@@ -147,7 +170,7 @@
 
 				particleMaterial.opacityNode = /*#__PURE__*/ Fn( () => {
 
-					const circle = step( uv().xy.sub( 0.5 ).length(), 0.5 );
+					const circle = uv().xy.sub( 0.5 ).length().step( 0.5 );
 					const life = particlePositions.toAttribute().w;
 
 					return circle.mul( life );
@@ -330,12 +353,12 @@
 
 
 				// background , an inverted icosahedron
-				const backgroundGeom = new THREE.IcosahedronGeometry( 100, 5 ).applyMatrix4( new THREE.Matrix4().makeScale( - 1, 1, 1 ) );
+				const backgroundGeom = new THREE.IcosahedronGeometry( 100, 52 ).applyMatrix4( new THREE.Matrix4().makeScale( - 1, 1, 1 ) );
 				const backgroundMaterial = new THREE.MeshStandardNodeMaterial();
-				backgroundMaterial.roughness = 0.4;
-				backgroundMaterial.metalness = 0.9;
+				backgroundMaterial.roughness = 0.84;
+				backgroundMaterial.metalness = 0.129;
 				backgroundMaterial.flatShading = true;
-				backgroundMaterial.colorNode = color( 0x0 );
+				backgroundMaterial.colorNode = color( 0xf);
 
 				const backgroundMesh = new THREE.Mesh( backgroundGeom, backgroundMaterial );
 				scene.add( backgroundMesh );
