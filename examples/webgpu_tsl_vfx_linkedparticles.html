@@ -1,23 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js webgpu - vfx linked particles</title>
+		<title>three.js webgpu - VFX Linked particles</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<link type="text/css" rel="stylesheet" href="example.css">
+		<link type="text/css" rel="stylesheet" href="main.css">
 	</head>
 	<body>
 
 		<div id="info">
-			<a href="https://threejs.org/" target="_blank" rel="noopener" class="logo-link"></a>
-
-			<div class="title-wrapper">
-				<a href="https://threejs.org/" target="_blank" rel="noopener">three.js</a><span>VFX Linked Particles</span>
-			</div>
-
-			<small>
-				Based on <a href="https://github.com/ULuIQ12/webgpu-tsl-linkedparticles" target="_blank" rel="noopener">this experiment</a> by Christophe Choffel.
-			</small>
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js webgpu</a> - VFX Linked particles
+			<br>
+			Based on <a href="https://github.com/ULuIQ12/webgpu-tsl-linkedparticles" target="_blank" rel="noopener">this experiment</a> by Christophe Choffel
 		</div>
 
 		<script type="importmap">
@@ -34,14 +28,16 @@
 		<script type="module">
 
 			import * as THREE from 'three/webgpu';
-			import { atan, cos, float, max, min, mix, PI, TWO_PI, sin, vec2, vec3, color, Fn, hash, hue, If, instanceIndex, Loop, mx_fractal_noise_float, mx_fractal_noise_vec3, pass, pcurve, storage, deltaTime, time, uv, uniform, step } from 'three/tsl';
+			import { atan, cos, float, max, min, mix, PI, PI2, sin, vec2, vec3, color, Fn, hash, hue, If, instanceIndex, Loop, mx_fractal_noise_float, mx_fractal_noise_vec3, pass, pcurve, storage, deltaTime, time, uv, uniform, step } from 'three/tsl';
 			import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 
 			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-			import { Inspector } from 'three/addons/inspector/Inspector.js';
-
+			import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 			import WebGPU from 'three/addons/capabilities/WebGPU.js';
+
+			import { ExtendedSRGBColorSpace, ExtendedSRGBColorSpaceImpl } from 'three/addons/math/ColorSpaces.js';
+
+			THREE.ColorManagement.define( { [ ExtendedSRGBColorSpace ]: ExtendedSRGBColorSpaceImpl } );
 
 			let camera, scene, renderer, postProcessing, controls, timer, light;
 
@@ -98,13 +94,15 @@
 
 				// renderer
 
-				renderer = new THREE.WebGPURenderer( { antialias: true } );
+				renderer = new THREE.WebGPURenderer( { antialias: true, outputType: THREE.HalfFloatType } );
 				renderer.setClearColor( 0x14171a );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.setAnimationLoop( animate );
-				renderer.inspector = new Inspector();
-				renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+				renderer.outputColorSpace = ExtendedSRGBColorSpace;
+				// TODO: Add support for tone mapping #29573
+				// renderer.toneMapping = THREE.ACESFilmicToneMapping;
 				document.body.appendChild( renderer.domElement );
 
 				// TSL function
@@ -144,7 +142,7 @@
 					const life = particlePositions.toAttribute().w;
 					const modLife = pcurve( life.oneMinus(), 8.0, 1.0 );
 					const pulse = pcurve(
-						sin( hash( instanceIndex ).mul( TWO_PI ).add( time.mul( 0.5 ).mul( TWO_PI ) ) ).mul( 0.5 ).add( 0.5 ),
+						sin( hash( instanceIndex ).mul( PI2 ).add( time.mul( 0.5 ).mul( PI2 ) ) ).mul( 0.5 ).add( 0.5 ),
 						0.25,
 						0.25
 					).mul( 10.0 ).add( 1.0 );
@@ -307,7 +305,7 @@
 
 					} );
 
-				} )().compute( nbParticles ).setName( 'Update Particles' );
+				} )().compute( nbParticles );
 
 				spawnParticles = /*#__PURE__*/ Fn( () => {
 
@@ -320,7 +318,7 @@
 
 					// random spherical direction
 					const rRange = float( 0.01 );
-					const rTheta = hash( particleIndex ).mul( TWO_PI );
+					const rTheta = hash( particleIndex ).mul( PI2 );
 					const rPhi = hash( particleIndex.add( 1 ) ).mul( PI );
 					const rx = sin( rTheta ).mul( cos( rPhi ) );
 					const ry = sin( rTheta ).mul( sin( rPhi ) );
@@ -334,7 +332,7 @@
 					// start in that direction
 					velocity.assign( rDir.mul( 5.0 ) );
 
-				} )().compute( nbToSpawn.value ).setName( 'Spawn Particles' );
+				} )().compute( nbToSpawn.value );
 
 
 				// background , an inverted icosahedron
@@ -377,7 +375,7 @@
 
 				// GUI
 
-				const gui = renderer.inspector.createParameters( 'Parameters' );
+				const gui = new GUI();
 
 				gui.add( controls, 'autoRotate' ).name( 'Auto Rotate' );
 				gui.add( controls, 'autoRotateSpeed', - 10.0, 10.0, 0.01 ).name( 'Auto Rotate Speed' );
