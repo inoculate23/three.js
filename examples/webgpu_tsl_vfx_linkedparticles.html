@@ -27,14 +27,17 @@
 
 		<script type="module">
 
-			import * as THREE from 'three';
-			import { atan, cos, float, max, min, mix, PI, PI2, sin, vec2, vec3, color, Fn, hash, hue, If, instanceIndex, Loop, mx_fractal_noise_float, mx_fractal_noise_vec3, pass, pcurve, storage, deltaTime, time, uv, uniform } from 'three/tsl';
+			import * as THREE from 'three/webgpu';
+			import { atan, cos, float, max, min, mix, PI, PI2, sin, vec2, vec3, color, Fn, hash, hue, If, instanceIndex, Loop, mx_fractal_noise_float, mx_fractal_noise_vec3, pass, pcurve, storage, deltaTime, time, uv, uniform, step } from 'three/tsl';
 			import { bloom } from 'three/addons/tsl/display/BloomNode.js';
 
 			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-			import { Timer } from 'three/addons/misc/Timer.js';
 			import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 			import WebGPU from 'three/addons/capabilities/WebGPU.js';
+
+			import { ExtendedSRGBColorSpace, ExtendedSRGBColorSpaceImpl } from 'three/addons/math/ColorSpaces.js';
+
+			THREE.ColorManagement.define( { [ ExtendedSRGBColorSpace ]: ExtendedSRGBColorSpaceImpl } );
 
 			let camera, scene, renderer, postProcessing, controls, timer, light;
 
@@ -86,17 +89,20 @@
 
 				scene = new THREE.Scene();
 
-				timer = new Timer();
+				timer = new THREE.Timer();
 				timer.connect( document );
 
 				// renderer
 
-				renderer = new THREE.WebGPURenderer( { antialias: true } );
+				renderer = new THREE.WebGPURenderer( { antialias: true, outputType: THREE.HalfFloatType } );
 				renderer.setClearColor( 0x14171a );
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.setAnimationLoop( animate );
-				renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+				renderer.outputColorSpace = ExtendedSRGBColorSpace;
+				// TODO: Add support for tone mapping #29573
+				// renderer.toneMapping = THREE.ACESFilmicToneMapping;
 				document.body.appendChild( renderer.domElement );
 
 				// TSL function
@@ -147,7 +153,7 @@
 
 				particleMaterial.opacityNode = /*#__PURE__*/ Fn( () => {
 
-					const circle = uv().xy.sub( 0.5 ).length().step( 0.5 );
+					const circle = step( uv().xy.sub( 0.5 ).length(), 0.5 );
 					const life = particlePositions.toAttribute().w;
 
 					return circle.mul( life );
